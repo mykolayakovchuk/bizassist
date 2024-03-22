@@ -42,5 +42,5 @@ Route::post('/sanctum/token', function (Request $request) {
 
 //тестовая функция
 Route::middleware('auth:sanctum')->post('/apitest', function () {
-    return "view(welcome)";
+    return "view(welcome). You are in app. ";
 });
