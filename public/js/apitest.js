@@ -32,4 +32,15 @@ axios({
     lastName: 'Flintstone'
   }
 });
+
+axios({
+  method: 'post',
+  url: '/api/report/edit',
+  headers: {'Authorization': 'Bearer 2|qk9JYVAPCZP7PW0lw8i9XDO5msqy95VXl7JmMkFvff0e66fe'},
+  data: {
+    idReport: 1,
+    description: ' 1 edited report from second user',
+    body: '3453453453'
+  }
+});
 */

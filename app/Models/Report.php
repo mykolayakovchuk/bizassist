@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Report extends Model
 {
     use HasFactory;
+
+    /**
+     * Получить пользователя, которому принадлежит отчёт.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

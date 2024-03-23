@@ -29,15 +29,12 @@ Route::post('/sanctum/token', function (Request $request) {
         'password' => 'required',
         'device_name' => 'required',
     ]);
-
     $user = User::where('email', $request->email)->first();
-
     if (! $user || ! Hash::check($request->password, $user->password)) {
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect.'],
         ]);
     }
-
     return $user->createToken($request->device_name)->plainTextToken;
 });
 
@@ -57,3 +54,9 @@ Route::middleware('auth:sanctum')->post('/report/edit', [ReportController::class
 
 //удаление отчёта в БД
 Route::middleware('auth:sanctum')->post('/report/delete', [ReportController::class, 'delete']);
+
+//получение отчёта по id
+Route::middleware('auth:sanctum')->post('/report', [ReportController::class, 'getReportById']);
+
+//получение списка отчётов пользователя 
+Route::middleware('auth:sanctum')->post('/myreports', [ReportController::class, 'allReportsById']);

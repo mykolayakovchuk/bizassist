@@ -41,15 +41,12 @@ class ReportController extends Controller
      * @return json (status)
      */
     public function edit(Request $request){
-        // Валидация запроса ...
         $request->validate([
             'description' => 'required|string|max:255',
             'body' => 'nullable|string',
             'idReport' => 'exists:App\Models\Report,id',
         
         ]);
-
-        // запись в БД ...
         $report = Report::find($request->idReport);
         if ($report->user_id != Auth::id()){
             return json_encode(["message"=>"this is not your report. editing prohibited"]);
@@ -59,5 +56,41 @@ class ReportController extends Controller
         $report->body = $request->body;
         $result = $report->save();
         return $this->dbAnswer($result);
+    }
+
+    /**
+     * Удаление отчета от пользователя
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return json (status)
+     */
+    public function delete(Request $request){
+        $request->validate([
+            'idReport' => 'exists:App\Models\Report,id',
+        ]);
+        $report = Report::find($request->idReport);
+        if ($report->user_id != Auth::id()){
+            return json_encode(["message"=>"this is not your report. editing prohibited"]);
+        }
+        $result = $report->delete();
+        return $this->dbAnswer($result);
+    }
+
+    /**
+     * Получение одного отч'та по id
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return json (report)
+     */
+    public function getReportById(Request $request){
+        $request->validate([
+            'idReport' => 'exists:App\Models\Report,id',
+        ]);
+        $report = Report::findOrFail($request->idReport);
+        $report->push($report->user);
+        if ($report->user->id != Auth::id()){
+            return json_encode(["message"=>"this is not your report. editing prohibited"]);
+        }
+        return $report->toJson();
     }
 }
