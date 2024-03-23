@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,3 +45,15 @@ Route::post('/sanctum/token', function (Request $request) {
 Route::middleware('auth:sanctum')->post('/apitest', function () {
     return "view(welcome). You are in app. ";
 });
+
+//тестовая функция 2
+Route::middleware('auth:sanctum')->post('/reporttest', [ReportController::class, 'test']);
+
+//внесение отчёта в БД
+Route::middleware('auth:sanctum')->post('/report/store', [ReportController::class, 'store']);
+
+//редактирование отчёта в БД
+Route::middleware('auth:sanctum')->post('/report/edit', [ReportController::class, 'edit']);
+
+//удаление отчёта в БД
+Route::middleware('auth:sanctum')->post('/report/delete', [ReportController::class, 'delete']);
