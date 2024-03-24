@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Conversation;
 use App\Models\Participant;
+use App\Models\Message;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +47,7 @@ class ConversationController extends Controller
         $request->validate([
             'idConversation' => 'exists:App\Models\Conversation,id',
         ]);
-        $conversation= Conversation::find($request->conversationId);
+        $conversation= Conversation::find($request->idConversation);
         $conversationBelongsThisUser = false;
         foreach ($conversation->participants as $participant){
             if ($participant->user_id == Auth::id()){
@@ -66,7 +67,7 @@ class ConversationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return json (список чатов)
      */
-    public function getMyConversations(Request $request){
+    public function getMyConversations(){
         $participation = Participant::where('user_id', Auth::id())->get();
         if ( $participation->isEmpty() ) {
             return json_encode(["message"=>"you have no chats"]);
@@ -85,5 +86,49 @@ class ConversationController extends Controller
             $conversations->push($conversation);
         }
         return $conversations->toJson();
+    }
+
+        /**
+     * получение чата по id
+     * @param  \Illuminate\Http\Request  $request
+     * @return json (Collection)
+     */
+    public function getChatById(Request $request){
+        $request->validate([
+            'idConversation' => 'exists:App\Models\Conversation,id',
+        ]);
+        //заголовок чата
+        $conversation= Conversation::find($request->idConversation);
+        $conversationBelongsThisUser = false;
+        foreach ($conversation->participants as $participant){
+            if ($participant->user_id == Auth::id()){
+                $conversationBelongsThisUser = true;
+            }
+        }
+        if($conversationBelongsThisUser == false){
+            return json_encode(["message"=>"this is not your chat. reading prohibited"]);
+        }
+        $chat = collect();
+        $chat->put("header", $conversation);
+        //сообщения чата
+        $messageList = collect();
+        $messages = $conversation->messages;
+        foreach ($messages as $message){
+            $messageBody = collect();
+            $messageBody->put("message", $message);
+            $messageBody->put("author", $message->user->name);
+            $messageBody->put("idAuthor", $message->user->id);
+            $messageList->push($messageBody);
+        }
+        $chat->put("messages", $messageList);
+        //собеседник
+        foreach ($conversation->participants as $conversationParticipant){
+            if($conversationParticipant->user_id !== Auth::id()){
+                $chat->put('interlocutorId', $conversationParticipant->user->id);
+                $chat->put('interlocutorName', $conversationParticipant->user->name);
+            }
+        }
+
+        return $chat->toJson();
     }
 }

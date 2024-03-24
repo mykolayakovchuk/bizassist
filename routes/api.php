@@ -80,4 +80,8 @@ Route::middleware('auth:sanctum')->post('/messenger/deletemessage',
 
 //получить список бизнес чатов
 Route::middleware('auth:sanctum')->post('/messenger/mychats',
-                 [ConversationController::class, 'getMyConversations']);                                        
+                 [ConversationController::class, 'getMyConversations']);
+                 
+//получить чат по ид
+Route::middleware('auth:sanctum')->post('/messenger/getChatById',
+                 [ConversationController::class, 'getChatById']);
