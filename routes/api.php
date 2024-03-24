@@ -71,5 +71,13 @@ Route::middleware('auth:sanctum')->post('/messenger/createchat',
 Route::middleware('auth:sanctum')->post('/messenger/deletechat',
                  [ConversationController::class, 'deleteConversation']);
 
-//удалить бизнес чат
+//отправить сообщение в чат
 Route::middleware('auth:sanctum')->post('/messenger/send', [MessageController::class, 'send']);
+
+//удалить сообщение из чата
+Route::middleware('auth:sanctum')->post('/messenger/deletemessage', 
+                                            [MessageController::class, 'delete']);
+
+//получить список бизнес чатов
+Route::middleware('auth:sanctum')->post('/messenger/mychats',
+                 [ConversationController::class, 'getMyConversations']);                                        

@@ -59,4 +59,31 @@ class ConversationController extends Controller
         $result = $conversation->delete();
         return $this->dbAnswer($result);
     }
+
+    /**
+     * Получение списка чатов текущего пользователя по id
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return json (список чатов)
+     */
+    public function getMyConversations(Request $request){
+        $participation = Participant::where('user_id', Auth::id())->get();
+        if ( $participation->isEmpty() ) {
+            return json_encode(["message"=>"you have no chats"]);
+          }
+        $conversations = collect();
+        foreach ($participation as $participant){
+            $conversation = collect();
+            $conversation->put('chatInfo', $participant->conversation);
+            $conversation->put('lastMessage', $participant->conversation->messages->last());
+            foreach ($participant->conversation->participants as $conversationParticipant){
+                if($conversationParticipant->user_id !== Auth::id()){
+                    $conversation->put('interlocutorId', $conversationParticipant->user->id);
+                    $conversation->put('interlocutorName', $conversationParticipant->user->name);
+                }
+            }
+            $conversations->push($conversation);
+        }
+        return $conversations->toJson();
+    }
 }

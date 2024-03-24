@@ -36,4 +36,21 @@ class MessageController extends Controller
         $result = $message->save();
         return $this->dbAnswer($result);
     }
+
+    /**
+     * Удаление сообщения пользователем
+     * @param  \Illuminate\Http\Request  $request
+     * @return json (status)
+     */
+    public function delete(Request $request){
+        $request->validate([
+            'idMessage' => 'exists:App\Models\Message,id'
+        ]);
+        $message = Message::find($request->idMessage);
+        if ($message->user_id != Auth::id()){
+            return json_encode(["message"=>"this is not your message. deleting prohibited"]);
+        }
+        $result = $message->delete();
+        return $this->dbAnswer($result);
+    }
 }
