@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,3 +70,6 @@ Route::middleware('auth:sanctum')->post('/messenger/createchat',
 //удалить бизнес чат
 Route::middleware('auth:sanctum')->post('/messenger/deletechat',
                  [ConversationController::class, 'deleteConversation']);
+
+//удалить бизнес чат
+Route::middleware('auth:sanctum')->post('/messenger/send', [MessageController::class, 'send']);
