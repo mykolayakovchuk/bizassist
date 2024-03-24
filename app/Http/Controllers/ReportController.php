@@ -93,4 +93,18 @@ class ReportController extends Controller
         }
         return $report->toJson();
     }
+
+    /**
+     * Получение отчётов текущего пользователя по id
+     * Вівод производистя с применением пагинации
+     * @param  \Illuminate\Http\Request  $request
+     * @return json (report)
+     */
+    public function userReports(){
+        $reports = Report::where('user_id', Auth::id())->latest()->paginate(10);
+        if ( $reports->isEmpty() ) {
+            return json_encode(["message"=>"you have no reports"]);
+          }
+        return $reports->toJson();
+    }
 }

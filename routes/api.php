@@ -59,4 +59,4 @@ Route::middleware('auth:sanctum')->post('/report/delete', [ReportController::cla
 Route::middleware('auth:sanctum')->post('/report', [ReportController::class, 'getReportById']);
 
 //получение списка отчётов пользователя 
-Route::middleware('auth:sanctum')->post('/myreports', [ReportController::class, 'allReportsById']);
+Route::middleware('auth:sanctum')->post('/myreports', [ReportController::class, 'userReports']);
