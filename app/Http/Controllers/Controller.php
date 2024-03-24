@@ -26,4 +26,13 @@ class Controller extends BaseController
         }
     }
 
+        /**Функция передачи ответа от БД при внесении транзакции
+     * 
+     * @input boolean
+     * @return json (status)
+     */
+    public function dbTransactionAnswer($transactionReturn){
+        return json_encode($transactionReturn);
+    }
+
 }

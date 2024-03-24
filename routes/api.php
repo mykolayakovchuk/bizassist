@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ConversationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,3 +61,11 @@ Route::middleware('auth:sanctum')->post('/report', [ReportController::class, 'ge
 
 //получение списка отчётов пользователя 
 Route::middleware('auth:sanctum')->post('/myreports', [ReportController::class, 'userReports']);
+
+//создать бизнес чат
+Route::middleware('auth:sanctum')->post('/messenger/createchat',
+                 [ConversationController::class, 'startConversation']);
+
+//удалить бизнес чат
+Route::middleware('auth:sanctum')->post('/messenger/deletechat',
+                 [ConversationController::class, 'deleteConversation']);
